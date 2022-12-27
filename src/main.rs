@@ -1,15 +1,19 @@
 mod libs;
-use std::{io::stdout, collections::LinkedList};
+use std::collections::LinkedList;
+
+use colored::Colorize;
+
 
 fn main() {
     loop {
-        let std = stdout();
-        match libs::utils::buildmainstd(std){
-            Ok(_) => {}
-            Err(e) => { println!("caught err {} in buildmainstd",e) }
-        }
+        libs::utils::clearstd();
         let worktype=LinkedList::from(["下载MCreator","配置Proxifier","退出"]);
-        libs::kb::loopforres(worktype);
-        break;
+        let workstr= libs::kb::loopforres(worktype,format!("{} ({})","📦️ MCreator Tookit Rust".green().bold(),"使用↑↓来选择选项，ENTER确认".cyan()).normal());
+        libs::utils::clearstd();
+        println!("🔧 Chose work as {}",workstr.green().bold());
+        match workstr {
+            "退出"=>break,
+            _=>""
+        };
     }
 }
