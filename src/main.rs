@@ -1,8 +1,14 @@
 mod libs;
 
 use colored::Colorize;
-
+use colored::control;
 fn main() {
+    if !cfg!(target_os = "Windows"){
+        match control::set_virtual_terminal(true){
+            Ok(_)=>"",
+            Err(_)=>""
+        };
+    };
     loop {
         libs::utils::clearstd();
         let chlist=["下载MCreator","配置Proxifier","退出"];
