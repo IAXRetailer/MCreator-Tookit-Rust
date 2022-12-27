@@ -1,12 +1,9 @@
-name: Rust
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+# .github/workflows/release.yml
 
-env:
-  CARGO_TERM_COLOR: always
+on:
+  release:
+    types: [created]
+
 jobs:
   release:
     name: release ${{ matrix.target }}
@@ -23,8 +20,6 @@ jobs:
             archive: zip
     steps:
       - uses: actions/checkout@master
-      - name: Run tests
-        run: cargo test --verbose
       - name: Compile and release
         uses: rust-build/rust-build.action@v1.4.0
         env:
