@@ -25,4 +25,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: mcreator-tookit-rust
-        path: '**/mcreator-tookit-rust.exe'
+        path: 'target/release/**'
