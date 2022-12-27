@@ -1,11 +1,11 @@
-use std::{collections::LinkedList, ops::Add};
+use std::{ops::Add};
 
 use colored::{Colorize, ColoredString};
 use crossterm::event::{read, Event, KeyCode, KeyEvent};
 use crate::libs::utils::clearstd;
 
 
-pub fn loopforres(ques:LinkedList<&str>,tips:ColoredString)-> &str{
+pub fn loopforres(ques:Vec<&str>,tips:ColoredString)-> &str{
     let itor=ques.iter();
     let mut vector: Vec<&str> = Vec::new();
     for i in itor{ vector.push(i); }
