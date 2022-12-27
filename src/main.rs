@@ -1,9 +1,9 @@
 mod libs;
 
 use colored::Colorize;
-use colored::control;
 fn main() {
     if !cfg!(target_os = "Windows"){
+        use colored::control;
         match control::set_virtual_terminal(true){
             Ok(_)=>"",
             Err(_)=>""
