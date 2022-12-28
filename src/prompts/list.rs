@@ -2,23 +2,24 @@ use std::{ops::Add};
 
 use colored::{Colorize, ColoredString};
 use crossterm::event::{read, Event, KeyCode, KeyEvent};
-use crate::libs::utils::clearstd;
+use super::utils::clearstd;
 
 
-pub fn loopforres(ques:Vec<&str>,tips:ColoredString)-> &str{
-    let itor=ques.iter();
+pub fn loopforres(choices:Vec<(&str,i32)>,ques:ColoredString,tips:ColoredString) -> i32{
+    clearstd();
+    let itor=choices.iter();
     let mut vector: Vec<&str> = Vec::new();
-    for i in itor{ vector.push(i); }
-    println!("{}",tips);
+    for (k,_) in itor{ vector.push(k); }
+    println!("{} {}",ques,tips);
     for i in renderchoice(vector, 0).iter(){
         println!("{}",i)
     }
-    let maxnowco=ques.len()-1;
+    let maxnowco=choices.len()-1;
     let mut nowco=0;
     loop {
         let mut vector2: Vec<&str> = Vec::new();
-        let itor=ques.iter();
-        for i in itor{ vector2.push(i); }
+        let itor=choices.iter().copied();
+        for (k,_) in itor{ vector2.push(k); }
         match read().unwrap() {
             Event::Key(KeyEvent {
                 code: KeyCode::Down,
@@ -28,10 +29,10 @@ pub fn loopforres(ques:Vec<&str>,tips:ColoredString)-> &str{
             }) => {
                 if nowco == maxnowco{
                     nowco = 0;
-                    modifykey(vector2,tips.clone(),0);
+                    modifykey(vector2,ques.clone(),tips.clone(),0);
                 }else{
                     nowco=nowco.add(1);
-                    modifykey(vector2,tips.clone(),nowco.try_into().unwrap());
+                    modifykey(vector2,ques.clone(),tips.clone(),nowco.try_into().unwrap());
                 }
             },
             Event::Key(KeyEvent {
@@ -42,10 +43,10 @@ pub fn loopforres(ques:Vec<&str>,tips:ColoredString)-> &str{
             }) => {
                 if nowco == 0{
                     nowco = maxnowco;
-                    modifykey(vector2,tips.clone(),maxnowco.try_into().unwrap());
+                    modifykey(vector2,ques.clone(),tips.clone(),maxnowco.try_into().unwrap());
                 }else{
                     nowco=nowco - 1;
-                    modifykey(vector2,tips.clone(),nowco.try_into().unwrap());
+                    modifykey(vector2,ques.clone(),tips.clone(),nowco.try_into().unwrap());
                 }
             },
             Event::Key(KeyEvent {
@@ -54,17 +55,23 @@ pub fn loopforres(ques:Vec<&str>,tips:ColoredString)-> &str{
                 kind:_,
                 state:_,
             }) => {
-                let data=vector2.get(nowco as usize);
-                return data.unwrap();
+                let data=vector2.get(nowco as usize).unwrap() as &str;
+                clearstd();
+                println!("{} {}",ques,data.yellow());
+                for (k,v) in choices.iter().copied(){
+                    if data == k{
+                        return v;
+                    }
+                }
             },
             _ => (),
         }
     }
 }
 
-fn modifykey(vec:Vec<&str>,tips:ColoredString,nowco:i32){
+fn modifykey(vec:Vec<&str>,ques:ColoredString,tips:ColoredString,nowco:i32){
     clearstd();
-    println!("{}",tips);
+    println!("{} {}",ques,tips);
     for i in renderchoice(vec, nowco).iter(){
         println!("{}",i)
     }
