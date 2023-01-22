@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
-use reqwest::header;
+use reqwest::{header, blocking::Client};
 
-pub fn get_text(url:&str) -> String {
+pub fn get_client() -> Client{
     let mut headers = header::HeaderMap::new();
     headers.insert(
         "User-Agent",
@@ -11,13 +11,17 @@ pub fn get_text(url:&str) -> String {
             .unwrap(),
     );
     let client = reqwest::blocking::Client::builder().default_headers(headers).build().unwrap();
-    let resp = client.get(url).send().unwrap();
+    return client;
+}
+
+pub fn get_text(url:&str) -> String {
+    let resp = get_client().get(url).send().unwrap();
     let text=resp.text().unwrap();
     return  text;
 }
 
 pub fn get_json(url:&str) -> HashMap<String,String> {
-    let resp = reqwest::blocking::get(url).expect("load url error");
+    let resp = get_client().get(url).send().unwrap();
     let json=resp.json().unwrap();
     return  json;
 }
